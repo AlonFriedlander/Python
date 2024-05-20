@@ -1,0 +1,17 @@
+2024-05-15 13:42:45,678 - line num = 14 - INFO - test the custom logger
+2024-05-15 13:42:45,679 - line num = 17 - DEBUG - debug
+2024-05-15 13:42:45,679 - line num = 18 - INFO - info
+2024-05-15 13:42:45,679 - line num = 19 - WARNING - warning
+2024-05-15 13:42:45,679 - line num = 20 - ERROR - error
+2024-05-15 13:42:45,680 - line num = 21 - CRITICAL - critical
+2024-05-15 13:42:45,680 - line num = 24 - DEBUG - the value of x is 2
+2024-05-15 13:42:45,680 - line num = 29 - ERROR - ZeroDivisionError
+Traceback (most recent call last):
+  File "C:\Users\alonf\Desktop\Python\Logging\main.py", line 27, in <module>
+    1/0
+ZeroDivisionError: division by zero
+2024-05-15 13:42:45,681 - line num = 30 - ERROR - ZeroDivisionError
+Traceback (most recent call last):
+  File "C:\Users\alonf\Desktop\Python\Logging\main.py", line 27, in <module>
+    1/0
+ZeroDivisionError: division by zero
