@@ -39,16 +39,18 @@ class Zoo:
 
         oldest_animal = max(reversed(self.animals), key=lambda animal: animal.age)
 
-        print("Information of the oldest animal:")
+        animal_type = type(oldest_animal).__name__
+        print(f"the oldest animal is from type {animal_type} with info:")
         print(oldest_animal.get_info())
 
-    def count_animals(self):
+    def count_animals(self, animal_type=None):
         animal_count = {}
-        for animal in self.animals:
-            animal_type = type(animal).__name__
-            if animal_type not in animal_count:
-                animal_count[animal_type] = 0
-            animal_count[animal_type] += 1
+        if animal_type:
+            return sum(1 for animal in self.animals if type(animal).__name__ == animal_type)
+        else:
+            for animal in self.animals:
+                animal_type = type(animal).__name__
+                animal_count[animal_type] = animal_count.get(animal_type, 0) + 1
         return animal_count
 
     def print_number_of_animals(self):

@@ -3,6 +3,7 @@ import json
 from zoo.zoo import Zoo
 from animals.lion import Lion
 from animals.rabbit import Rabbit
+from animals.goat import Goat
 
 from collections import namedtuple
 
@@ -19,6 +20,7 @@ class ZooCLI:
             "4": MenuItem(self.print_oldest_animal_info, "Print Oldest Animal Info"),
             "5": MenuItem(self.print_number_of_animals, "Print Number of Animals"),
             "6": MenuItem(self.load_animals_from_json, "Load Animals from JSON"),
+            "7": MenuItem(self.print_number_of_specific_animal, "Print Number of Specific Animal"),
         }
 
     def run(self):
@@ -106,6 +108,19 @@ class ZooCLI:
             print("Error loading animals from JSON: File not found.")
         except Exception as e:
             print(f"Error loading animals from JSON: {e}")
+
+    def print_number_of_specific_animal(self):
+        print("Enter the type of animal to count: ")
+        for key, value in self.zoo.config.items():
+            print(f"{key}")
+
+        animal_type = input("Enter your choice: ")
+        animal_count = self.zoo.count_animals(animal_type)
+
+        if animal_count == 0:
+            print(f"No animals of {animal_type} in the zoo.")
+        else:
+            print(f"Number of {animal_type}s: {animal_count}")
 
 
 def is_valid_name(name):

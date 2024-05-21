@@ -13,6 +13,13 @@
       {"gender": "Gender (Male/Female)"},
       {"fur_color": "Fur Color (Gray/White)"}
     ]
+  },
+    "Goat": {
+    "attributes": [
+      {"name": "Name"},
+      {"age": "Age (0-99)"},
+      {"gender": "Gender (Male/Female)"}
+    ]
   }
 }
 
