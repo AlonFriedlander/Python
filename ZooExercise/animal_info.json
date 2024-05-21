@@ -1,1 +1,42 @@
-{}
+{
+    "Lion": {
+        "attributes": [
+            {
+                "name": "shimon",
+                "age": "12",
+                "gender": "male"
+            },
+            {
+                "name": "alon",
+                "age": "18",
+                "gender": "male"
+            },
+            {
+                "name": "arusi",
+                "age": "89",
+                "gender": "female"
+            },
+            {
+                "name": "izi",
+                "age": "19",
+                "gender": "male"
+            }
+        ]
+    },
+    "Rabbit": {
+        "attributes": [
+            {
+                "name": "lala",
+                "age": "99",
+                "gender": "male",
+                "fur_color": "gray"
+            },
+            {
+                "name": "kale",
+                "age": "31",
+                "gender": "Male",
+                "fur_color": "white"
+            }
+        ]
+    }
+}

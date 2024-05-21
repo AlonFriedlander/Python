@@ -4,6 +4,7 @@ import json
 
 class Zoo:
     def __init__(self):
+        self.config = None
         self.animals = []
         self.load_config()
 
@@ -41,9 +42,21 @@ class Zoo:
         print("Information of the oldest animal:")
         print(oldest_animal.get_info())
 
+    def count_animals(self):
+        animal_count = {}
+        for animal in self.animals:
+            animal_type = type(animal).__name__
+            if animal_type not in animal_count:
+                animal_count[animal_type] = 0
+            animal_count[animal_type] += 1
+        return animal_count
+
     def print_number_of_animals(self):
-        num_animals = len(self.animals)
-        print(f"Number of animals currently in the zoo: {num_animals}")
+        animal_count = self.count_animals()
+        total_animals = sum(animal_count.values())
+        print(f"Total animals: {total_animals}")
+        for animal_type, count in animal_count.items():
+            print(f"{animal_type}: {count}")
 
     def collect_animal_info(self):
         animal_info = {}

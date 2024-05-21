@@ -1,3 +1,5 @@
+import json
+
 from zoo.zoo import Zoo
 from animals.lion import Lion
 from animals.rabbit import Rabbit
@@ -16,6 +18,7 @@ class ZooCLI:
             "3": MenuItem(self.export_to_json_file, "Export to JSON File"),
             "4": MenuItem(self.print_oldest_animal_info, "Print Oldest Animal Info"),
             "5": MenuItem(self.print_number_of_animals, "Print Number of Animals"),
+            "6": MenuItem(self.load_animals_from_json, "Load Animals from JSON"),
         }
 
     def run(self):
@@ -69,6 +72,37 @@ class ZooCLI:
 
     def print_number_of_animals(self):
         self.zoo.print_number_of_animals()
+
+    def load_animals_from_json(self):
+        try:
+            file_path = input("Enter the path to the JSON file: ")
+            with open(file_path) as f:
+                data = json.load(f)
+
+            print("Animals loaded from JSON file successfully.")
+
+            for animal_type, animal_data in data.items():
+                for attributes in animal_data["attributes"]:
+                    animal_info = {}
+
+                    for attr_info in attributes.items():
+                        attr_name, attr_value = attr_info
+                        animal_info[attr_name] = attr_value
+
+                    try:
+                        animal_class = globals()[animal_type]
+                        animal = animal_class(**animal_info)
+                        self.zoo.add_animal(animal)
+                    except KeyError:
+                        print(f"Unknown animal type: {animal_type}")
+                        continue
+
+            print("Animals loaded from JSON file successfully.")
+
+        except FileNotFoundError:
+            print("Error loading animals from JSON: File not found.")
+        except Exception as e:
+            print(f"Error loading animals from JSON: {e}")
 
 
 def is_valid_name(name):
