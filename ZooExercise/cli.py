@@ -1,11 +1,11 @@
 import json
+from typing import Dict
+from collections import namedtuple
 
 from zoo.zoo import Zoo
 from animals.lion import Lion
 from animals.rabbit import Rabbit
 from animals.goat import Goat
-
-from collections import namedtuple
 
 MenuItem = namedtuple("MenuItem", ["function", "print_statement"])
 
@@ -13,7 +13,8 @@ MenuItem = namedtuple("MenuItem", ["function", "print_statement"])
 class ZooCLI:
     def __init__(self, zoo: Zoo):
         self.zoo = zoo
-        self.menu_options = {
+        self.running: bool = True
+        self.menu_options: Dict[str, MenuItem] = {
             "1": MenuItem(self.add_new_animal, "Add New Animal"),
             "2": MenuItem(self.print_all_animals, "Print All Animals"),
             "3": MenuItem(self.export_to_json_file, "Export to JSON File"),
@@ -21,10 +22,12 @@ class ZooCLI:
             "5": MenuItem(self.print_number_of_animals, "Print Number of Animals"),
             "6": MenuItem(self.load_animals_from_json, "Load Animals from JSON"),
             "7": MenuItem(self.print_number_of_specific_animal, "Print Number of Specific Animal"),
+            "8": MenuItem(self.exit_program, "Exit"),
         }
 
-    def run(self):
-        while True:
+    def run(self) -> None:
+        """Starts the main loop of the program."""
+        while self.running:
             self.display_menu()
             choice = input("Enter your choice: ")
             try:
@@ -33,12 +36,19 @@ class ZooCLI:
             except KeyError:
                 print("Invalid choice. Please select a valid option.")
 
-    def display_menu(self):
+    def display_menu(self) -> None:
+        """Displays the menu options."""
         print("MENU")
         for key, item in self.menu_options.items():
             print(f"{key}: {item.print_statement}")
 
-    def add_new_animal(self):
+    def exit_program(self) -> None:
+        print("Exiting the program. Goodbye!")
+        self.running = False
+        return
+
+    def add_new_animal(self) -> None:
+        """Allows the user to add a new animal to the zoo."""
         print("Select the type of animal:")
         for key, value in self.zoo.config.items():
             print(f"{key}")
@@ -63,19 +73,24 @@ class ZooCLI:
             except KeyError:
                 print("Invalid choice. Please select a valid option.")
 
-    def print_all_animals(self):
+    def print_all_animals(self) -> None:
+        """Prints information about all animals in the zoo."""
         self.zoo.print_all_animals()
 
-    def export_to_json_file(self):
+    def export_to_json_file(self) -> None:
+        """Exports information about all animals to a JSON file."""
         self.zoo.export_to_json_file()
 
-    def print_oldest_animal_info(self):
+    def print_oldest_animal_info(self) -> None:
+        """Prints information about the oldest animal in the zoo."""
         self.zoo.print_oldest_animal_info()
 
-    def print_number_of_animals(self):
+    def print_number_of_animals(self) -> None:
+        """Prints the number of animal in the zoo."""
         self.zoo.print_number_of_animals()
 
-    def load_animals_from_json(self):
+    def load_animals_from_json(self) -> None:
+        """Loads animals from a JSON file."""
         try:
             file_path = input("Enter the path to the JSON file: ")
             with open(file_path) as f:
@@ -109,7 +124,8 @@ class ZooCLI:
         except Exception as e:
             print(f"Error loading animals from JSON: {e}")
 
-    def print_number_of_specific_animal(self):
+    def print_number_of_specific_animal(self) -> None:
+        """Prints the number of a specific type of animal in the zoo."""
         print("Enter the type of animal to count: ")
         for key, value in self.zoo.config.items():
             print(f"{key}")
@@ -123,24 +139,32 @@ class ZooCLI:
             print(f"Number of {animal_type}s: {animal_count}")
 
 
-def is_valid_name(name):
+def is_valid_name(name: str) -> bool:
+    """Validates the name of an animal."""
     return all(char.isalpha() or char.isspace() for char in name)
 
 
-def is_valid_age(age):
-    float_age = float(age)
-    return 0 <= float_age <= 99
+def is_valid_age(age: str) -> bool:
+    """Validates the age of an animal."""
+    try:
+        float_age = float(age)
+        return 0 <= float_age <= 99
+    except ValueError:
+        return False
 
 
-def is_valid_gender(gender):
+def is_valid_gender(gender: str) -> bool:
+    """Validates the gender of an animal."""
     return gender.lower() in ['male', 'female']
 
 
-def is_valid_fur_color(fur_color):
+def is_valid_fur_color(fur_color: str) -> bool:
+    """Validates the fur color of an animal."""
     return fur_color.lower() in ['gray', 'white']
 
 
-def get_valid_input(prompt, validation_func=None):
+def get_valid_input(prompt: str, validation_func=None) -> str:
+    """Gets user input and validates it using the provided validation function."""
     while True:
         user_input = input(prompt)
         try:
