@@ -79,23 +79,26 @@ class ZooCLI:
             with open(file_path) as f:
                 data = json.load(f)
 
-            print("Animals loaded from JSON file successfully.")
-
             for animal_type, animal_data in data.items():
                 for attributes in animal_data["attributes"]:
                     animal_info = {}
 
+                    # Validate each attribute's value before adding it to animal_info
                     for attr_info in attributes.items():
                         attr_name, attr_value = attr_info
+                        validation_func = globals().get(f"is_valid_{attr_name.lower()}")
+                        if validation_func is None or not validation_func(attr_value):
+                            print(f"Invalid value for {attr_name}: {attr_value}. Skipping animal.")
+                            break
                         animal_info[attr_name] = attr_value
-
-                    try:
-                        animal_class = globals()[animal_type]
-                        animal = animal_class(**animal_info)
-                        self.zoo.add_animal(animal)
-                    except KeyError:
-                        print(f"Unknown animal type: {animal_type}")
-                        continue
+                    else:  # If all attributes pass validation, create the animal instance
+                        try:
+                            animal_class = globals()[animal_type]
+                            animal = animal_class(**animal_info)
+                            self.zoo.add_animal(animal)
+                        except KeyError:
+                            print(f"Unknown animal type: {animal_type}")
+                            continue
 
             print("Animals loaded from JSON file successfully.")
 
