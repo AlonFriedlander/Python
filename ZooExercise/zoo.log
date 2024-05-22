@@ -1,0 +1,13 @@
+INFO - date and time: 2024-05-22 08:02:46,030 - file name: cli.py - line 50 -msg: choose '6' from main menu
+INFO - date and time: 2024-05-22 08:02:46,031 - file name: cli.py - line 145 -msg: try to load animals from json
+INFO - date and time: 2024-05-22 08:02:54,599 - file name: cli.py - line 166 -msg: successfully add a new Lion name: 'shimon'
+INFO - date and time: 2024-05-22 08:02:54,600 - file name: cli.py - line 166 -msg: successfully add a new Lion name: 'alon'
+INFO - date and time: 2024-05-22 08:02:54,600 - file name: cli.py - line 166 -msg: successfully add a new Lion name: 'arusi'
+INFO - date and time: 2024-05-22 08:02:54,600 - file name: cli.py - line 166 -msg: successfully add a new Lion name: 'izi'
+INFO - date and time: 2024-05-22 08:02:54,600 - file name: cli.py - line 166 -msg: successfully add a new Rabbit name: 'lala'
+INFO - date and time: 2024-05-22 08:02:54,600 - file name: cli.py - line 166 -msg: successfully add a new Rabbit name: 'kale'
+INFO - date and time: 2024-05-22 08:02:54,601 - file name: cli.py - line 169 -msg: load animals successfully
+INFO - date and time: 2024-05-22 08:02:58,637 - file name: cli.py - line 50 -msg: choose '5' from main menu
+INFO - date and time: 2024-05-22 08:02:58,637 - file name: cli.py - line 139 -msg: print animal count
+INFO - date and time: 2024-05-22 08:03:49,269 - file name: cli.py - line 50 -msg: choose '8' from main menu
+INFO - date and time: 2024-05-22 08:03:50,292 - file name: cli.py - line 70 -msg: exit the program
