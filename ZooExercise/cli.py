@@ -1,3 +1,9 @@
+############
+#title: ZooCLI Module
+#author: Alon Friedlander
+#description: Module containing the ZooCLI class for managing a command-line interface for a zoo.
+############
+
 import json
 import sys
 from typing import Dict, Callable
@@ -20,8 +26,8 @@ def create_validation_functions() -> Dict[str, Callable[[str], bool]]:
 
 
 class ZooCLI:
-    def __init__(self, zoo: Zoo):
-        self.zoo = zoo
+    def __init__(self, zoo_object: Zoo):
+        self.zoo = zoo_object
         self.running: bool = True
         self.menu_options: Dict[str, MenuItem] = self.create_menu_options()
         self.validation_functions: Dict[str, Callable[[str], bool]] = create_validation_functions()

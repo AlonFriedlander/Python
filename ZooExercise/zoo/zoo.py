@@ -1,3 +1,9 @@
+#####################
+#title: Zoo Module
+#author: Alon Friedlander
+#description: Module containing the Zoo class for managing animals in a zoo.
+#####################
+
 import sys
 from typing import Optional, Dict, Any, List, Union
 from animals.animal import Animal
@@ -10,8 +16,13 @@ import json
 
 class Zoo:
     def __init__(self):
-        self.config: Dict[str, Any] = Zoo.load_config()
-        self.animals: List[Animal] = []
+        self._config: Dict[str, Any] = Zoo.load_config()
+        self._animals: List[Animal] = []
+
+    @property
+    def config(self) -> Dict[str, Any]:
+        """Getter method for config attribute."""
+        return self._config
 
     @staticmethod
     def load_config(config_file: str = "animal_config.json") -> Dict[str, Any]:
@@ -32,7 +43,7 @@ class Zoo:
         try:
             animal_class = globals()[animal_type]
             animal = animal_class(**animal_info)
-            self.animals.append(animal)
+            self._animals.append(animal)
             return True
         except KeyError as e:
             logger.error(f"error {e}")
@@ -41,11 +52,11 @@ class Zoo:
     def get_all_animals_info(self) -> List[str]:
         """Returns information about all animals in the zoo as a list of strings."""
         animals_info = []
-        if not self.animals:
+        if not self._animals:
             animals_info.append("No animals in the zoo.")
         else:
             animals_info.append("All animals in the zoo:")
-            for index, animal in enumerate(self.animals, start=1):
+            for index, animal in enumerate(self._animals, start=1):
                 animal_type = type(animal).__name__
                 animal_info = f"{animal_type} {index}: {animal.get_info()}"
                 animals_info.append(animal_info)
@@ -53,10 +64,10 @@ class Zoo:
 
     def get_oldest_animal_info(self) -> Optional[str]:
         """Returns information about the oldest animal in the zoo."""
-        if not self.animals:
+        if not self._animals:
             return None
 
-        oldest_animal = max(reversed(self.animals), key=lambda animal: animal.age)
+        oldest_animal = max(reversed(self._animals), key=lambda animal: animal.age)
         animal_type = type(oldest_animal).__name__
         return f"The oldest animal is from type {animal_type} with info:\n{oldest_animal.get_info()}"
 
@@ -64,9 +75,9 @@ class Zoo:
         """Counts the number of animals in the zoo, optionally by animal type."""
         animal_count: Union[int, Dict[str, int]] = {}
         if animal_type:
-            return sum(1 for animal in self.animals if type(animal).__name__ == animal_type)
+            return sum(1 for animal in self._animals if type(animal).__name__ == animal_type)
         else:
-            for animal in self.animals:
+            for animal in self._animals:
                 animal_type = type(animal).__name__
                 animal_count[animal_type] = animal_count.get(animal_type, 0) + 1
         return animal_count
@@ -83,7 +94,7 @@ class Zoo:
     def collect_animal_info(self) -> Dict[str, Dict[str, Any]]:
         """Collects information about all animals in the zoo."""
         animal_info: Dict[str, Dict[str, Any]] = {}
-        for animal in self.animals:
+        for animal in self._animals:
             animal_type = type(animal).__name__
             if animal_type not in animal_info:
                 animal_info[animal_type] = {"attributes": []}
