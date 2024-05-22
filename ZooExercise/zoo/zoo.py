@@ -5,6 +5,7 @@
 #####################
 
 import sys
+from dataclasses import asdict
 from typing import Optional, Dict, Any, List, Union
 from animals.animal import Animal
 from log.logging_config import logger
@@ -17,12 +18,20 @@ import json
 class Zoo:
     def __init__(self):
         self._config: Dict[str, Any] = Zoo.load_config()
-        self._animals: List[Animal] = []
+        self._oldest_animal: Optional[Animal] = None
+        self._animals: Dict[str, Dict[str, Union[List[Animal], int]]] = {
+            animal_type: {"animals": [], "counter": 0} for animal_type in self._config.keys()
+        }
 
     @property
     def config(self) -> Dict[str, Any]:
         """Getter method for config attribute."""
         return self._config
+
+    @property
+    def oldest_animal(self) -> Optional[Animal]:
+        """Getter method for oldest_animal attribute."""
+        return self._oldest_animal
 
     @staticmethod
     def load_config(config_file: str = "animal_config.json") -> Dict[str, Any]:
@@ -43,7 +52,13 @@ class Zoo:
         try:
             animal_class = globals()[animal_type]
             animal = animal_class(**animal_info)
-            self._animals.append(animal)
+            self._animals[animal_type]["animals"].append(animal)
+            self._animals[animal_type]["counter"] += 1
+
+            # Update the oldest animal reference if necessary
+            if not self._oldest_animal or animal.age >= self._oldest_animal.age:
+                self._oldest_animal = animal
+
             return True
         except KeyError as e:
             logger.error(f"error {e}")
@@ -52,54 +67,29 @@ class Zoo:
     def get_all_animals_info(self) -> List[str]:
         """Returns information about all animals in the zoo as a list of strings."""
         animals_info = []
-        if not self._animals:
-            animals_info.append("No animals in the zoo.")
-        else:
-            animals_info.append("All animals in the zoo:")
-            for index, animal in enumerate(self._animals, start=1):
-                animal_type = type(animal).__name__
+        for animal_type, animal_group in self._animals.items():
+            for index, animal in enumerate(animal_group["animals"], start=1):
                 animal_info = f"{animal_type} {index}: {animal.get_info()}"
                 animals_info.append(animal_info)
         return animals_info
-
-    def get_oldest_animal_info(self) -> Optional[str]:
-        """Returns information about the oldest animal in the zoo."""
-        if not self._animals:
-            return None
-
-        oldest_animal = max(reversed(self._animals), key=lambda animal: animal.age)
-        animal_type = type(oldest_animal).__name__
-        return f"The oldest animal is from type {animal_type} with info:\n{oldest_animal.get_info()}"
 
     def count_animals(self, animal_type: Optional[str] = None) -> Union[int, Dict[str, int]]:
         """Counts the number of animals in the zoo, optionally by animal type."""
         animal_count: Union[int, Dict[str, int]] = {}
         if animal_type:
-            return sum(1 for animal in self._animals if type(animal).__name__ == animal_type)
+            return self._animals.get(animal_type, {}).get("counter", 0)
         else:
-            for animal in self._animals:
-                animal_type = type(animal).__name__
-                animal_count[animal_type] = animal_count.get(animal_type, 0) + 1
+            for animal_type, animal_group in self._animals.items():
+                animal_count[animal_type] = animal_group["counter"]
         return animal_count
-
-    def print_number_of_animals(self) -> Dict[str, int]:
-        """Returns the number of animals in the zoo, grouped by type."""
-        animal_count = self.count_animals()
-        total_animals = sum(animal_count.values())
-        result = {"Total animals": total_animals}
-        for animal_type, count in animal_count.items():
-            result[animal_type] = count
-        return result
 
     def collect_animal_info(self) -> Dict[str, Dict[str, Any]]:
         """Collects information about all animals in the zoo."""
         animal_info: Dict[str, Dict[str, Any]] = {}
-        for animal in self._animals:
-            animal_type = type(animal).__name__
-            if animal_type not in animal_info:
-                animal_info[animal_type] = {"attributes": []}
-            attributes = {}
-            for attr, value in animal.__dict__.items():
-                attributes[attr] = value
-            animal_info[animal_type]["attributes"].append(attributes)
+
+        for animal_type, animal_group in self._animals.items():
+            animal_list = animal_group["animals"]
+            animal_info[animal_type] = {"attributes": []}
+            for animal_instance in animal_list:
+                animal_info[animal_type]["attributes"].append(asdict(animal_instance))
         return animal_info

@@ -107,43 +107,48 @@ class ZooCLI:
     def print_all_animals(self) -> None:
         """Prints information about all animals in the zoo."""
         animals_info = self.zoo.get_all_animals_info()
-        logger.info(f"print all the animals info")
-        for info in animals_info:
-            print(info)
+        if not animals_info:
+            print("No animals in the zoo.")
+        else:
+            logger.info("Printing information about all animals in the zoo.")
+            for info in animals_info:
+                print(info)
 
     def export_to_json_file(self) -> None:
         """Exports information about all animals to a JSON file."""
         animal_info = self.zoo.collect_animal_info()
-        while True:
-            try:
-                filename = input("Enter the filename for the JSON file: ")
-                with open(filename, "w") as file:
-                    json.dump(animal_info, file, indent=4)
-                print(f"Animal information successfully exported to {filename}.")
-                logger.info(f"successfully exported to {filename}")
-                break
-            except (FileNotFoundError, PermissionError, IOError) as e:
-                print(f"Error exporting to JSON file: {e}. Please enter a valid filename.", file=sys.stderr)
-                logger.error(f"error at export to json: {e}")
-            except Exception as e:
-                print(f"An unexpected error occurred: {e}", file=sys.stderr)
-                logger.error(f"error at export to json: {e}")
+        try:
+            filename = input("Enter the filename for the JSON file: ")
+            with open(filename, "w") as file:
+                json.dump(animal_info, file, indent=4)
+            print(f"Animal information successfully exported to {filename}.")
+            logger.info(f"successfully exported to {filename}")
+        except (FileNotFoundError, PermissionError, IOError) as e:
+            print(f"Error exporting to JSON file: {e}. Please enter a valid filename.", file=sys.stderr)
+            logger.error(f"error at export to json: {e}")
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}", file=sys.stderr)
+            logger.error(f"error at export to json: {e}")
 
     def print_oldest_animal_info(self) -> None:
         """Prints information about the oldest animal in the zoo."""
-        oldest_animal_info = self.zoo.get_oldest_animal_info()
+        oldest_animal_info = self.zoo.oldest_animal
         if oldest_animal_info:
             logger.info(f"print oldest animal {oldest_animal_info}")
-            print(oldest_animal_info)
+            print(f"The oldest animal is {oldest_animal_info}")
         else:
             print("No animals in the zoo.")
 
     def print_number_of_animals(self) -> None:
         """Prints the number of animals in the zoo."""
-        animal_count = self.zoo.print_number_of_animals()
+        animal_count = self.zoo.count_animals()
+        total_animals = sum(animal_count.values())
         logger.info(f"print animal count")
+
+        print(f"Total animals: {total_animals}")
+
         for animal_type, count in animal_count.items():
-            print(f"{animal_type}: {count}")
+            print(f"{animal_type} : {count}")
 
     def load_animals_from_json(self) -> None:
         """Loads animals from a JSON file."""
@@ -237,8 +242,3 @@ def get_valid_input(prompt: str, validation_func=None) -> str:
             logger.error(f"function get_valid_input- valueError ")
             print("Invalid input. Please enter a valid value.", file=sys.stderr)
 
-
-if __name__ == "__main__":
-    zoo = Zoo()
-    cli = ZooCLI(zoo)
-    cli.run()
