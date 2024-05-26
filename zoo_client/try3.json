@@ -1,0 +1,35 @@
+{
+    "Lion": {
+        "attributes": [
+            {
+                "name": "alon",
+                "age": "12",
+                "gender": "male"
+            },
+            {
+                "name": "alis",
+                "age": "78",
+                "gender": "female"
+            }
+        ]
+    },
+    "Rabbit": {
+        "attributes": [
+            {
+                "name": "alo",
+                "age": "99",
+                "gender": "female",
+                "fur_color": "gray"
+            }
+        ]
+    },
+    "Goat": {
+        "attributes": [
+            {
+                "name": "lala",
+                "age": "1",
+                "gender": "male"
+            }
+        ]
+    }
+}

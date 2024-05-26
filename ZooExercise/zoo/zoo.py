@@ -6,7 +6,7 @@
 
 import sys
 from dataclasses import asdict
-from typing import Optional, Dict, Any, List, Union
+from typing import Optional, Dict, Any, List, Union, Type
 from animals.animal import Animal
 from log.logging_config import logger
 from animals.lion import Lion
@@ -17,21 +17,29 @@ import json
 
 class Zoo:
     def __init__(self):
-        self._config: Dict[str, Any] = Zoo.load_config()
-        self._oldest_animal: Optional[Animal] = None
+        self.config: Dict[str, Any] = Zoo.load_config()
+        self.oldest_animal: Optional[Animal] = None
         self._animals: Dict[str, Dict[str, Union[List[Animal], int]]] = {
-            animal_type: {"animals": [], "counter": 0} for animal_type in self._config.keys()
+            animal_type: {"animals": [], "counter": 0} for animal_type in self.config.keys()
         }
 
-    @property
-    def config(self) -> Dict[str, Any]:
-        """Getter method for config attribute."""
-        return self._config
+        # Dictionary mapping animal type strings to their corresponding class objects
+        self._animal_classes: Dict[str, Type[Animal]] = {
+            "Lion": Lion,
+            "Rabbit": Rabbit,
+            "Goat": Goat
+        }
 
-    @property
-    def oldest_animal(self) -> Optional[Animal]:
+    def get_config(self):
+        # Return the configuration data
+        return self.config
+
+    def get_oldest_animal(self) -> Optional[str]:
         """Getter method for oldest_animal attribute."""
-        return self._oldest_animal
+        if self.oldest_animal is not None:
+            return self.oldest_animal.get_info()
+        else:
+            return None
 
     @staticmethod
     def load_config(config_file: str = "animal_config.json") -> Dict[str, Any]:
@@ -50,18 +58,21 @@ class Zoo:
     def add_new_animal(self, animal_type: str, animal_info: dict) -> bool:
         """Adds a new animal to the zoo."""
         try:
-            animal_class = globals()[animal_type]
+            animal_class = self._animal_classes.get(animal_type)
+            if animal_class is None:
+                raise KeyError(f"Animal type '{animal_type}' not found.")
+            print(animal_info)
             animal = animal_class(**animal_info)
             self._animals[animal_type]["animals"].append(animal)
             self._animals[animal_type]["counter"] += 1
 
             # Update the oldest animal reference if necessary
-            if not self._oldest_animal or animal.age >= self._oldest_animal.age:
-                self._oldest_animal = animal
+            if not self.oldest_animal or animal.age >= self.oldest_animal.age:
+                self.oldest_animal = animal
 
             return True
         except KeyError as e:
-            logger.error(f"error {e}")
+            print(f"Error adding new animal: {e}")
             return False
 
     def get_all_animals_info(self) -> List[str]:
